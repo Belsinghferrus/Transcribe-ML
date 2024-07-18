@@ -12,7 +12,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [audioStream, setAudioStream] = useState(null);
   const [output, setOutput] = useState(null)
-  const [loading, setloading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [finished, setFinished] = useState(false)
 
@@ -43,6 +43,7 @@ function App() {
           break;
         case 'RESULT':
           setOutput(e.data.results)
+          console.log(e.data.results)
           break;
         case 'INFERENCE_DONE':
           setFinished(true)
@@ -84,7 +85,7 @@ function App() {
      : loading 
      ? (<Transcribing />)
      : isAudioAvailable 
-     ? (<FileDisplay file ={file} audioStream={setAudioStream} handleAudioReset={handleAudioReset} />) 
+     ? (<FileDisplay handleFormSubmission={handleFormSubmission} file ={file} audioStream={setAudioStream} handleAudioReset={handleAudioReset} />) 
      : (<HomePage setFile = {setFile} setAudioStream = {setAudioStream} />)
     }
      
