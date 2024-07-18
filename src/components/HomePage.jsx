@@ -1,19 +1,20 @@
  import React, {useState, useEffect, useRef} from 'react'
- 
+ import { FaMicrophone } from 'react-icons/fa'; // Example import using react-icons
+
  function HomePage(props) {
 
     const {setAudioStream, setFile} = props;
     const [recordingStatus, setRecordingStatus] = useState("inactive")
-    const [audioChuks, setAudioChunks] = useState([])
+    const [audioChunks, setAudioChunks] = useState([])
     const [duration, setDuration] = useState(0)
     const  mediaRecorder = useRef(null)
     const mimeType = 'audio/webm'
  
     async function startRecording() {
         let tempStream
-        console.log('Start recording');
+        console.log('Start Recording');
         try{
-            const streamData = navigator.mediaDevices.getUserMedia({
+            const streamData = await navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: false
             })
@@ -28,7 +29,7 @@
         mediaRecorder.current = media
         mediaRecorder.current.start()
         let localAudioChunks = []
-        mediaRecorder.current.onDataAvailable = (event) => {
+        mediaRecorder.current.ondataavailable = (event) => {
             if (typeof event.data === 'undefined') {return}
             if (event.data.size === 0 ) {return}
             localAudioChunks.push(event.data)
@@ -39,10 +40,10 @@
 
     async function stopRecording(){
         setRecordingStatus('inactive')
-        console.log("stop recording");
+        console.log("stop Recording");
         mediaRecorder.current.stop()
-        mediaRecorder.current.onStop = () => {
-            const audioBlob = new Blob(audiChunks, {type: mimeType})
+        mediaRecorder.current.onstop = () => {
+            const audioBlob = new Blob(audioChunks, {type: mimeType})
             setAudioStream(audioBlob)
             setAudioChunks([])
             setDuration(0)
@@ -62,14 +63,14 @@
         <main className='flex-1  p-4 flex flex-col text-center gap-3 sm:gap-4 md:gap-5 justify-center pb-20'>
             <h1 className='font-semibold text-5xl sm:text-6xl md:text-7xl'>Trans<span className='text-blue-400 bold'>Scribe</span></h1>
             <h3 className='font-medium md:text-lg'>Record <span className='text-blue-400'>&rarr;</span> Transcribe <span className='text-blue-400'>&rarr;</span> Translate</h3>
+
             <button onClick={recordingStatus === 'recording' ? stopRecording : startRecording} className='flex specialBtn px-4 py-2 rounder-xl items-center text-base justify-between gap-4 mx-auto w-72 max-w-full my-4'>
                 <p className='text-blue-400'>{ recordingStatus === 'inactive'? 'Record' : 'Stop Recording'} </p>
                 <div className='flex items-center gap-2'>
                     {duration !==0 && (
                         <p className='text-sm '>{duration}s</p>
                     )}
-                <i className={"fa-solid duration-200 fa-microphone" + 
-                        (recordingStatus === 'recording' ? 'text-rose-300' : "")}></i>
+                    <FaMicrophone className={`duration-200 ${recordingStatus === 'recording' ? 'text-rose-500' : ''}`} />
                 </div>
             </button>
             <p className='text-base'>Or <label className='text-blue-400 cursor-pointer hover:text-blue-600 duration-200'>Upload <input onChange={(e) => {
