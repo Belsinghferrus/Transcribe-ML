@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Transcription from './Transcription'
 import Translation from './Translation'
 
@@ -8,19 +8,67 @@ function Information(props) {
 const {output} = props;
 console.log(output);
 const [tab, setTab] = useState('transcription')
+const [translation, setTranslation]= useState(null)
+const [translating, setTranslating] = useState(null)
+const [toLanguage, setToLanguage] = useState("select Language")
+
+  const worker = useRef()
+
+  useEffect(() => {
+    if(!worker.current) {
+      worker.current = new Worker(new URL('../utils/translate.worker.js', import.meta.url), {
+        type: 'module'
+      })
+    }
+    const onMessageRecieved = async (e) => {
+      switch (e.data.status){
+        case 'initiate':
+          console.log('Downloading');
+          break;
+        case 'progress':
+          console.log('Loading');
+          break;
+        case 'update':
+          setTranslation(e.data.output)
+          console.log(e.data.output)
+          break;
+        case 'complete':
+          setTranslating(false)
+          console.log("DONE");
+          break;
+      }
+    }
+    worker.current.addEventListener('message', onMessageRecieved)
+    return() => worker.current.removeEventListener('message', onMessageRecieved)
+  })
+
+  const textElement = tab === 'transcription' ? output.map(val => val.text) : translation || ""
 
   function handleCopy(){
-    navigator.clipboard.writeText()
+    navigator.clipboard.writeText(textElement)
   }
 
   function handleDownload(){
     const element = document.createElement('a')
-    const file = new Blob([], {type: 'text/plain'})
+    const file = new Blob([textElement], {type: 'text/plain'})
     element.href = URL.createObjectURL(file)
-    element.download(`Transcribe_${(new Date()).toDateString()}.txt`)
+    element.download = `Transcribe_${(new Date()).toString()}.txt`
     document.body.appendChild(element)
     element.click()
   }
+
+  function generateTranslation (){
+      if(translating || toLanguage === 'Select Language') {
+        return
+       }
+       setTranslating(true)
+       worker.current.postMessage({
+        text: output.map(val => val.text),
+        src_lang : 'eng_Latn',
+        tgt_lang : toLanguage
+       })
+  }
+
 
   return (
     <main className='flex-1  p-4 flex flex-col text-center gap-3 sm:gap-4 md:gap-5 justify-center pb-20 max-w-prose w-full mx-auto'>
@@ -31,14 +79,14 @@ const [tab, setTab] = useState('transcription')
     </div>
     <div className='my-8 flex flex-col '>
     {tab ==='transcription' 
-    ? (<Transcription output={output}/>) 
-    : (<Translation {...props}/>)}
+    ? (<Transcription {...props} textElement= {textElement}/>) 
+    : (<Translation {...props} toLanguage={toLanguage} textElement={textElement} translating={translating} setTranslation={setTranslation} setTranslating={setTranslating} setToLanguage={setToLanguage} generateTranslation={generateTranslation}/>)}
     </div>
     <div className='flex flex-center gap-4 mx-auto '>
-        <button title='copy' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
+        <button onClick={handleCopy} title='copy' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
           <i className="fa-solid fa-copy"></i> 
         </button>
-        <button title='download' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
+        <button onClick={handleDownload} title='download' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
           <i className="fa-solid fa-download"></i>
         </button>
     </div>

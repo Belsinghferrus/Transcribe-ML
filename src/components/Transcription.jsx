@@ -2,12 +2,11 @@ import React from 'react'
 
 function Transcription(props) {
 
-  const {output} = props
-  console.log(output);
-  const finalText = output.map(val => val.text)
+  const {textElement} = props
+
   return (
     <div>
-      {finalText}
+      {textElement}
     </div>
   )
 }
