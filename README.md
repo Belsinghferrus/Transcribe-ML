@@ -5,7 +5,7 @@
 <h2>Fully Responsive and built using React and tailwindCss</h2>
 <a href="https://transcribe-ml-five.vercel.app">➥ Live Demo</a>
 </div>
-
+<br/>
 <a href="https://transcribe-ml-five.vercel.app">
 <img src="./src/assets/screenshot.png" />
 </a>
