@@ -1,4 +1,8 @@
+<div align="center">
+
 # Free Speech to Text | Transcribe and Translate
+
+</div>
 
 <a href="https://transcribe-ml-five.vercel.app">
 <img src="./src/assets/screenshot.png" />
@@ -9,7 +13,7 @@ This is a Machine Learning Project. which is used to transcribe and translate fr
 Since the server runs locally on the browser there is no external cost for any API's. But please wait for some time when you are using for the first time to download all essential components to get you up and running.
 
 
-##Community Channel
+## Community Channel
 Subscribe to our [Youtube](https://www.youtube.com/@Ferruz_) Channel
 
 
