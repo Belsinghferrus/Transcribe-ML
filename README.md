@@ -1,8 +1,15 @@
-# Free Audio to Text Transcribe and Translate
+# Free Speech to Text | Transcribe and Translate
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<a href="https://transcribe-ml-five.vercel.app">
+<img src="./src/assets/screenshot.png" />
+</a>
+This is a Machine Learning Project. which is used to transcribe and translate from Speech to Text. A React web based transcription & translation app that uses web workers to run ML models in the browser.
 
-Currently, two official plugins are available:
+## No Cost and Unlimited 
+Since the server runs locally on the browser there is no external cost for any API's. But please wait for some time when you are using for the first time to download all essential components to get you up and running.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+##Community Channel
+Subscribe to our [Youtube](https://www.youtube.com/@Ferruz_) Channel
+
+
