@@ -11,7 +11,7 @@ function App() {
 
   const [file, setFile] = useState(null);
   const [audioStream, setAudioStream] = useState(null);
-  const [output, setOutput] = useState(null)
+  const [output, setOutput] = useState("")
   const [loading, setLoading] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [finished, setFinished] = useState(false)
@@ -53,21 +53,22 @@ function App() {
     }
     worker.current.addEventListener('message', onMessageRecieved)
     return() => worker.current.removeEventListener('message', onMessageRecieved)
-  }, [])
+  })
 
   async function readAudioFrom (file){
     const sampling_rate = 16000
     const audioCTX = new AudioContext({ sampleRate: sampling_rate})
     const response = await file.arrayBuffer()
-    const decode = await audioCTX.decodeAudioData(response)
-    const audio = decode.getChannelData(0)
+    const decoded = await audioCTX.decodeAudioData(response)
+    const audio = decoded.getChannelData(0)
+    return audio
     }
 
   async function handleFormSubmission(){
     if (!file && !audioStream){return}
 
     let audio = await readAudioFrom(file? file : audioStream)
-    const model_name = 'openai/whisper-tiny.en'
+    const model_name = `openai/whisper-tiny.en`
 
     worker.current.postMessage({
       type: MessageTypes.INFERENCE_REQUEST,
@@ -81,7 +82,7 @@ function App() {
     <section className='min-h-screen flex flex-col' >
      <Header/>
      {output 
-     ? (<Information />)
+     ? (<Information  output={output}/>)
      : loading 
      ? (<Transcribing />)
      : isAudioAvailable 

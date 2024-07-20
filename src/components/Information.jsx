@@ -3,9 +3,24 @@ import { useState } from 'react'
 import Transcription from './Transcription'
 import Translation from './Translation'
 
-function Information() {
+function Information(props) {
 
+const {output} = props;
+console.log(output);
 const [tab, setTab] = useState('transcription')
+
+  function handleCopy(){
+    navigator.clipboard.writeText()
+  }
+
+  function handleDownload(){
+    const element = document.createElement('a')
+    const file = new Blob([], {type: 'text/plain'})
+    element.href = URL.createObjectURL(file)
+    element.download(`Transcribe_${(new Date()).toDateString()}.txt`)
+    document.body.appendChild(element)
+    element.click()
+  }
 
   return (
     <main className='flex-1  p-4 flex flex-col text-center gap-3 sm:gap-4 md:gap-5 justify-center pb-20 max-w-prose w-full mx-auto'>
@@ -14,9 +29,19 @@ const [tab, setTab] = useState('transcription')
         <button onClick={() => setTab('transcription')} className={'px-4 py-1 duration-200 ' + (tab === 'transcription'? 'bg-blue-400 text-white' : 'text-blue-400 hover:text-blue-600')} >Transcription</button>
         <button onClick={() => setTab('translation')} className={'px-4 py-1 duration-200 '+ (tab === 'translation'? 'bg-blue-400 text-white' : 'text-blue-400 hover:text-blue-600')}>Translation</button>
     </div>
+    <div className='my-8 flex flex-col '>
     {tab ==='transcription' 
-    ? (<Transcription />) 
-    : (<Translation />)}
+    ? (<Transcription output={output}/>) 
+    : (<Translation {...props}/>)}
+    </div>
+    <div className='flex flex-center gap-4 mx-auto '>
+        <button title='copy' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
+          <i className="fa-solid fa-copy"></i> 
+        </button>
+        <button title='download' className='bg-white hover:text-blue-500 text-blue-400 px-2 aspect-square grid place-items-center  rounded '>
+          <i className="fa-solid fa-download"></i>
+        </button>
+    </div>
     </main>
   )
 }
